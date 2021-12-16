@@ -25,6 +25,9 @@ const client = new MongoClient(url);
 // The database to use
 const dbName = "Playlists";
 
+//================================
+//Function to add items
+//================================
 async function run() {
     try {
         await client.connect();
@@ -51,4 +54,34 @@ async function run() {
         await client.close();
     }
 }
-run().catch(console.dir);
+//run().catch(console.dir);
+
+
+//================================
+//Function to get db
+//================================
+function getGeneratedPlaylist() {
+    getPlaylist("GeneratedPlaylists").catch(console.error);
+}
+getGeneratedPlaylist();
+
+function getCuratedPlaylist() {
+    getPlaylist("Curatedplaylists").catch(console.error);
+}
+//getCuratedPlaylist();
+
+async function getPlaylist(typePlaylist) {
+    const MongoClient = require('mongodb').MongoClient;
+    const client = new MongoClient(url);
+    //connecting
+    await client.connect();
+    const db = client.db(dbName);
+    //Get right items out of right collection
+    const items = await db.collection(typePlaylist).find().toArray();
+
+    items.forEach((item, i) => {
+        console.log(item.title)
+    })
+    client.close();
+
+}
