@@ -112,6 +112,7 @@ async function getPlaylist(typePlaylist) {
         const db = client.db(dbName);
         //Get right items out of right collection
         const items = await db.collection(typePlaylist).find().toArray();
+        items += "TEST"
         items.forEach((item, i) => {
             //console.log(item.title)
         })
