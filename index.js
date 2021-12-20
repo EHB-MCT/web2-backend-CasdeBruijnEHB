@@ -26,10 +26,14 @@ const app = express()
 const port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
-
+/*
 app.get('/', (req, res) => {
     console.log("test");
     res.redirect('/info.html')
+})
+*/
+app.get('/', (req, res) => {
+    res.sendFile(path.join("web2-backend-CasdeBruijnEHB", '/public/info.html'));
 })
 
 app.get('/getCuratedPlaylists', async (req, res) => {
@@ -111,9 +115,10 @@ async function getPlaylist(typePlaylist) {
         await client.connect();
         const db = client.db(dbName);
         //Get right items out of right collection
-        let items = await db.collection(typePlaylist).find().toArray();
-        items += "TEST"
-
+        const items = await db.collection(typePlaylist).find().toArray();
+        items.forEach((item, i) => {
+            //console.log(item.title)
+        })
         //console.log(arrItems)
 
         return items;
