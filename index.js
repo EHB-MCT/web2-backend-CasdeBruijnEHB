@@ -29,7 +29,7 @@ app.use(express.static('public'));
 
 app.get('/', (req, res) => {
     console.log("test");
-    res.redirect('/info.html')
+    res.redirect('./info.html')
 })
 
 app.get('/getCuratedPlaylists', async (req, res) => {
