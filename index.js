@@ -14,6 +14,34 @@ Hoe foto er op zetten?
 2- Of lokaal doorsturen naar express, en het PAD opslaan 
 3- Cloudinary 
 */
+//====================
+//Run express
+//====================
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+    console.log("test");
+    res.redirect('/info.html')
+})
+
+app.get('/getCuratedPlaylists', (req, res) => {
+    res.send("Curated playlists")
+})
+app.get('/getGeneratedPlaylists', (req, res) => {
+    res.send("Generated playlists")
+})
+
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
+})
+
+//=================================
+//MongoDB
+//=================================
 const {
     MongoClient
 } = require("mongodb");
@@ -63,7 +91,7 @@ async function run() {
 function getGeneratedPlaylist() {
     getPlaylist("GeneratedPlaylists").catch(console.error);
 }
-getGeneratedPlaylist();
+//getGeneratedPlaylist();
 
 function getCuratedPlaylist() {
     getPlaylist("Curatedplaylists").catch(console.error);
