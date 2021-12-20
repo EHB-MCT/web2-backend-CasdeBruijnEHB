@@ -19,6 +19,7 @@
   "homepage": "https://github.com/EHB-MCT/web2-backend-CasdeBruijnEHB#readme",
   "dependencies": {
     "express": "^4.17.2",
+    "heroku": "^7.59.2",
     "mongodb": "^4.2.1"
   }
 }
