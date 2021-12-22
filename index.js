@@ -67,7 +67,6 @@ app.post('/postNewCuratedPlaylist', async (req, res) => {
     try {
         await client.connect();
         console.log("Connected correctly to server");
-        const db = client.db("Playlists")
         const col = client.db('Playlists').collection('Curatedplaylists');
 
         // Construct a document
@@ -89,10 +88,63 @@ app.post('/postNewCuratedPlaylist', async (req, res) => {
     }
 })
 
+app.post('/postNewGeneratedPlaylist', async (req, res) => {
+    try {
+        await client.connect();
+        console.log("Connected correctly to server");
+        const col = client.db('Playlists').collection('GeneratedPlaylists');
+
+        // Construct a document
+        console.log(req.body)
+        let playlistdocument = {
+            playlistID: req.body.playlistID,
+            title: req.body.title,
+            description: req.body.description,
+            imageurl: req.body.imageurl,
+            mainCategory: req.body.mainCategory,
+            score: req.body.score
+        }
+        // Insert a single document, wait for promise so we can read it back
+        const p = await col.insertOne(playlistdocument);
+        // Find one document
+        res.status(201).json(playlistdocument);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        await client.close();
+    }
+})
+
+app.delete('/getCuratedPlaylists/:id', async (req, res) => {
+    try {
+        //connect to the db
+        await client.connect();
+
+        //retrieve the challenges collection data
+        const col = client.db('Playlists').collection('Curatedplaylists');
+        console.log("PARAMS", req.params)
+        // Validation for double challenges
+        let result = await col.deleteOne({
+            _id: ObjectId(req.params._id)
+        });
+        //Send back successmessage
+        res.status(201).json(result);
+        return;
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        });
+    } finally {
+        await client.close();
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
+
 
 
 
