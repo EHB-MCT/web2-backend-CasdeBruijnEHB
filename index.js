@@ -30,6 +30,7 @@ const dbName = "Playlists";
 //====================
 //Run express
 //====================
+const bodyParser = require('body-parser');
 const express = require('express');
 const {
     json
@@ -44,6 +45,8 @@ const cors = require('cors');
 
 app.use(cors());
 app.use(express.static('public'));
+app.use(bodyParser.json());
+
 
 
 app.get('/', (req, res) => {
@@ -66,17 +69,9 @@ app.post('/postNewCuratedPlaylist', async (req, res) => {
         console.log("Connected correctly to server");
         const db = client.db("Playlists")
         const col = client.db('Playlists').collection('Curatedplaylists');
-        /*
-        const challenge = await collection.findOne({
-            _id: ObjectId(req.params.playlistID)
-        });
-        if (challenge) {
 
-            res.status(400).send(`Bad request. Playlist with this ID, ${req.body.playlistID} already exists!`);
-            return;
-        }
-        */
-        // Construct a document        
+        // Construct a document
+        console.log(req.body)
         let playlistdocument = {
             playlistID: req.body.playlistID,
             title: req.body.title,
