@@ -14,6 +14,19 @@ Hoe foto er op zetten?
 2- Of lokaal doorsturen naar express, en het PAD opslaan 
 3- Cloudinary 
 */
+//=================================
+//MongoDB
+//=================================
+
+
+// Replace the following with your Atlas connection string                                                                                                                                        
+const url = "mongodb+srv://casdb1:admin@curatedplaylists.wf8lj.mongodb.net/Playlists?retryWrites=true&w=majority";
+const MongoClient = require('mongodb').MongoClient;
+const client = new MongoClient(url);
+
+// The database to use
+const dbName = "Playlists";
+
 //====================
 //Run express
 //====================
@@ -47,22 +60,46 @@ app.get('/getGeneratedPlaylists', async (req, res) => {
     res.send(val)
 })
 
+app.post('/postNewCuratedPlaylist', async (req, res) => {
+    try {
+        await client.connect();
+        console.log("Connected correctly to server");
+        const db = client.db("Playlists")
+        const col = client.db('Playlists').collection('Curatedplaylists');
+        /*
+        const challenge = await collection.findOne({
+            _id: ObjectId(req.params.playlistID)
+        });
+        if (challenge) {
+
+            res.status(400).send(`Bad request. Playlist with this ID, ${req.body.playlistID} already exists!`);
+            return;
+        }
+        */
+        // Construct a document        
+        let playlistdocument = {
+            playlistID: req.body.playlistID,
+            title: req.body.title,
+            description: req.body.description,
+            imageurl: req.body.imageurl
+        }
+        // Insert a single document, wait for promise so we can read it back
+        const p = await col.insertOne(playlistdocument);
+        // Find one document
+        res.status(201).json(playlistdocument);
+    } catch (err) {
+        console.log(err.stack);
+    } finally {
+        await client.close();
+    }
+})
+
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
 
-//=================================
-//MongoDB
-//=================================
 
-
-// Replace the following with your Atlas connection string                                                                                                                                        
-const url = "mongodb+srv://casdb1:admin@curatedplaylists.wf8lj.mongodb.net/Playlists?retryWrites=true&w=majority";
-const MongoClient = require('mongodb').MongoClient;
-const client = new MongoClient(url);
-
-// The database to use
-const dbName = "Playlists";
 
 //================================
 //Function to add items
